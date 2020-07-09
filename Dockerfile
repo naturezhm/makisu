@@ -12,7 +12,11 @@ ADD bin ./bin
 ADD lib ./lib
 RUN make lbins
 
-FROM scratch
+FROM alpine:3.12.0
+RUN apk add --no-cache libc6-compat curl iftop tzdata \
+    && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    && echo "Asia/Shanghai" > /etc/timezone
+    
 COPY --from=builder /workspace/github.com/uber/makisu/bin/makisu/makisu.linux /makisu-internal/makisu
 ADD ./assets/cacerts.pem /makisu-internal/certs/cacerts.pem
 
